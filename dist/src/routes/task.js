@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const TaskModel_1 = __importDefault(require("../models/TaskModel"));
+const TaskService_1 = __importDefault(require("../services/TaskService"));
+const TaskController_1 = __importDefault(require("../controllers/TaskController"));
+const checkToken_1 = require("../middlewares/checkToken");
+const task = new TaskModel_1.default();
+const taskService = new TaskService_1.default(task);
+const taskController = new TaskController_1.default(taskService);
+const route = (0, express_1.Router)();
+route.use((req, res, next) => (0, checkToken_1.authToken)(req, res, next));
+route.post('/', (req, res) => taskController.create(req, res));
+route.get('/', (req, res) => taskController.find(req, res));
+route.put('/:id', (req, res) => taskController.update(req, res));
+route.delete('/:id', (req, res) => taskController.delete(req, res));
+exports.default = route;
